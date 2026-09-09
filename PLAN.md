@@ -1,0 +1,68 @@
+# Build plan
+
+**Deliverable:** designed home page on a live URL — **12 September 2026**. Not a wireframe. A non-technical stakeholder is being shown it.
+
+Full site: 6–7 weeks from kickoff.
+
+---
+
+## Status
+
+| # | Stage | State |
+|---|---|---|
+| 0 | Scaffold — Next 16, Tailwind v4, GSAP, Lenis, git | ✅ Done |
+| 1 | Project docs — AGENTS, README, PLAN, brand | ✅ Done |
+| 2 | Design tokens — palette, type scale, spacing | ⬜ Next |
+| 3 | Shell — layout, nav, footer, Lenis wiring, reduced-motion guard | ⬜ |
+| 4 | Home page — full designed page | ⬜ |
+| 5 | Motion — mask reveals, hairline draws, logo rail | ⬜ |
+| 6 | Deploy preview to Vercel | ⬜ |
+| — | *Client review — 12 Sep* | |
+| 7 | Remaining page designs | ⬜ |
+| 8 | Projects index + detail template | ⬜ |
+| 9 | Sanity — schema, image pipeline, approval fields | ⬜ |
+| 10 | Content load (15 projects), QA, launch | ⬜ |
+
+---
+
+## Phase detail
+
+### 2 · Design tokens
+Near-black ground (never `#000`), the client's brand blue lifted to pass AA on dark, warm off-white, one type scale. Tailwind v4 `@theme` block in `globals.css`. Fonts via `next/font` — Instrument Serif + Archivo as stand-ins until the client supplies their selection.
+
+### 3 · Shell
+Root layout stays a server component. `<SmoothScroll>` is a thin `"use client"` wrapper mounting `ReactLenis root` with `autoRaf: false`, driven from `gsap.ticker`. Plugin registration in `lib/gsap.ts`, once. Nav with scroll state; footer carrying three offices.
+
+### 4 · Home page
+Chaptered single-scroll structure — each chapter a condensed section linking to its full page. Hero, about, capabilities, selected projects, client logo rail, contact. Dimension-line figures rather than counting numbers.
+
+### 5 · Motion
+Mask reveals (`clip-path` inset on a wrapper, counter-scale on the image inside). Hairline rules drawing in via `scaleX`. Logo rail looping. Nothing pinned yet — pinned sections come after design approval.
+
+### 6 · Deploy
+Push to GitHub, import to Vercel under the client's account. Verify on real mobile, not just a resized window.
+
+---
+
+## Open items
+
+- [ ] Placeholder imagery — real Meisterwerk project photos, or licensed stock stand-ins?
+- [ ] Logo — SVG needed; wordmark set in type until it arrives
+- [ ] Client's typeface selection, **with evidence of a web licence**
+- [ ] Client's colour palette (brand blue, darker grey, off-white; possible light orange accent)
+- [ ] Which client brands may be named publicly, or whether projects go out anonymised
+- [ ] Content: project metadata — descriptor, location, area, programme weeks, scope of works
+- [ ] Confirm which Meisterwerk entity is contracting (UAE / KSA)
+
+---
+
+## Decisions taken
+
+| Decision | Reason |
+|---|---|
+| GSAP over Motion | One animation runtime. GSAP is stronger at timeline choreography; all plugins free since 3.13. |
+| Lenis over ScrollSmoother | Cannot run both. Lenis is lighter and is the current standard. |
+| React `<ViewTransition>` for route transitions | Zero config on Next 16. Not `next-view-transitions`, not Barba, not AnimatePresence. |
+| Static generation throughout | Pages serve from CDN rather than regional compute. Faster, and resilient to a single-region outage. |
+| Sanity deferred until after design approval | Schema should follow the finished project template, not precede it. |
+| No component library | Nothing in the popular set suits a luxury editorial register. shadcn/Radix for behaviour only. |
