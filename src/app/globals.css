@@ -1,26 +1,327 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   MEISTERWERK — design tokens
+   Derived from the client's written design direction, 11 Sep 2026.
+   Contemporary quiet luxury with editorial minimalism.
+   ============================================================ */
+
+@theme {
+  /* ---- Colour ------------------------------------------------
+     Primary is a subtle dark gradient #171717 -> #0B0B0B.
+     Accent #5B81B2 measures 4.87:1 on #0B0B0B — passes AA for
+     body text, so it needs no lightening. Used sparingly.       */
+  --color-ink: #0B0B0B;          /* deepest ground */
+  --color-ink-raised: #171717;   /* gradient top, raised surfaces */
+  --color-paper: #FFFFFF;
+  --color-paper-soft: #FCFAEE;   /* warm off-white for copy over imagery */
+  /* Accent is #5B81B2 — specified exactly in the written design direction,
+     "used sparingly for highlights, interactions, links or selected UI
+     elements", and explicitly not a dominant brand colour. Measured 4.87:1 on
+     #0B0B0B, which passes AA for text, so it needs no lightening.
+
+     accent-light (#AAC2E9) is the blue sampled from the MEISTER half of the
+     supplied wordmark. It is NOT a UI colour — the brief names one accent and
+     this is not it. It exists only so the logo artwork has a token, and for
+     the rare case of blue type at small sizes over a photograph. */
+  --color-accent: #5B81B2;
+  --color-accent-light: #AAC2E9;
+
+  --color-mute-70: rgba(255, 255, 255, 0.70);
+  --color-mute-50: rgba(255, 255, 255, 0.50);
+  --color-mute-30: rgba(255, 255, 255, 0.30);
+  --color-hair: rgba(255, 255, 255, 0.08);
+  --color-hair-dark: rgba(0, 0, 0, 0.12);
+
+  /* ---- Type --------------------------------------------------
+     Sans only. Body Glacial Indifference, display Jost.
+     Tracking polarity from Bang & Olufsen: negative on display,
+     positive on small uppercase labels.                         */
+  --font-body: var(--font-glacial), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-jost), var(--font-glacial), system-ui, sans-serif;
+
+  --text-display: clamp(2.5rem, 6vw, 4.5rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.015em;
+
+  --text-h1: clamp(2rem, 4vw, 3rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.012em;
+
+  --text-h2: clamp(1.5rem, 2.4vw, 2.25rem);
+  --text-h2--line-height: 1.25;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-lead: clamp(1.125rem, 1.6vw, 1.5rem);
+  --text-lead--line-height: 1.5;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-body--letter-spacing: 0.012em;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.18em;
+
+  --text-micro: 0.8125rem;
+  --text-micro--line-height: 1.5;
+
+  /* ---- Rhythm ------------------------------------------------
+     The 160 / 80 / 32 triad, lifted from FLOS.                  */
+  --spacing-block: calc(var(--rhythm-base, 10rem) * var(--rhythm-scale, 1));
+  --spacing-block-sm: calc(var(--rhythm-base-sm, 5rem) * var(--rhythm-scale, 1));
+  --spacing-tight: 2rem;         /* 32px  intra-section */
+
+  --container-site: 90rem;       /* 1440px */
+  --container-bleed: 106.25rem;  /* 1700px */
+
+  /* ---- Motion ------------------------------------------------ */
+  --ease-entrance: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-hover: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+
+  /* Runtime-overridable by the design-controls panel. */
+  --img-brightness: 0.88;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================================
+   Drawing-sheet chrome
+   Only the `drawing` layout is set out inside a sheet border; the
+   others are deliberately edge-to-edge.
+   ============================================================ */
+
+:root { --sheet-inset: 0px; }
+
+[data-layout='drawing'] {
+  --sheet-inset: 0.75rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (min-width: 768px) {
+  [data-layout='drawing'] { --sheet-inset: 1.25rem; }
+}
+
+/* Content clears the border rather than colliding with it. */
+[data-layout='drawing'] .u-container {
+  padding-inline: calc(var(--sheet-inset) + 1.25rem);
+}
+
+@media (min-width: 768px) {
+  [data-layout='drawing'] .u-container {
+    padding-inline: calc(var(--sheet-inset) + 2.25rem);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* The header becomes a title block: ruled off, not floating over imagery. */
+[data-layout='drawing'] header::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--sheet-inset) + 1.25rem);
+  right: calc(var(--sheet-inset) + 1.25rem);
+  bottom: 0;
+  height: 1px;
+  background: var(--color-hair);
 }
+
+@media (min-width: 768px) {
+  [data-layout='drawing'] header::after {
+    left: calc(var(--sheet-inset) + 2.25rem);
+    right: calc(var(--sheet-inset) + 2.25rem);
+  }
+}
+
+/* Flutes. The column in the logo is fluted — repeated vertical lines — and
+   the grid borrows that: column rules are drawn rather than implied.
+   Declared with @utility so it accepts variants (md:u-flute). */
+@utility u-flute {
+  border-left: 1px solid var(--color-hair);
+}
+
+/* ============================================================
+   Layout density
+   The rhythm dial multiplies these rather than replacing them, so a
+   layout's own density survives the client changing the spacing.
+   ============================================================ */
+
+:root {
+  --rhythm-base: 10rem;     /* 160px — the FLOS triad */
+  --rhythm-base-sm: 5rem;   /* 80px mobile */
+  --rhythm-scale: 1;
+}
+
+/* The ledger carries more information per screen, so it needs less air
+   between sections or the page reads as unfinished. */
+[data-layout='index'] {
+  --rhythm-base: 7.5rem;
+  --rhythm-base-sm: 4rem;
+}
+
+/* Set out on a sheet, so the border supplies part of the margin. */
+[data-layout='drawing'] {
+  --rhythm-base: 8.5rem;
+  --rhythm-base-sm: 4.5rem;
+}
+
+/* Full-screen sections supply their own breathing room; adding the standard
+   rhythm on top of 100svh blocks leaves dead space between them. */
+[data-layout='cinematic'] {
+  --rhythm-base: 11rem;
+  --rhythm-base-sm: 5.5rem;
+  scroll-snap-type: y proximity;
+}
+
+/* Proximity, never mandatory. Mandatory snapping fights the user's own
+   scrolling, traps trackpad gestures mid-flick and breaks anchor links. */
+@media (prefers-reduced-motion: reduce) {
+  [data-layout='cinematic'] { scroll-snap-type: none; }
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+html {
+  /* Native scroll. The references — B&O, FLOS, Gucci — all use it,
+     and the brief warns against motion that slows access to content. */
+  scroll-behavior: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-ink);
+  background-image: linear-gradient(180deg, #171717 0%, #0B0B0B 60%);
+  background-attachment: fixed;
+  color: var(--color-paper);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.65;
+  letter-spacing: 0.012em;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* Images are the product. No radii, no shadows, no borders —
+   the brief explicitly excludes boxes, cards and decoration. */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ============================================================
+   Reduced motion
+   The hidden state is never set in CSS — GSAP owns the whole
+   lifecycle via .from(), so content is visible if JS never runs.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+
+.u-container {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .u-container { padding-inline: 2.5rem; }
+}
+
+.u-bleed {
+  width: 100%;
+  max-width: var(--container-bleed);
+  margin-inline: auto;
+}
+
+.u-eyebrow {
+  font-size: var(--text-eyebrow);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mute-50);
+}
+
+.u-display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--text-display);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Photography runs in full colour. Luxury retail sells on material — brass,
+   lacquer, stone, leather, stones in a vitrine — and desaturating it throws
+   away the exact thing the client is being hired to deliver. The only
+   treatment is a slight brightness pull so type set over an image stays
+   legible without a heavier scrim. */
+.u-img {
+  filter: brightness(var(--img-brightness, 0.88));
+  transition: filter 0.4s var(--ease-hover);
+}
+
+/* Hover push-in on project tiles, switchable from the design-controls panel.
+   Kept in CSS so the tile stays a server component — no JavaScript ships for
+   a hover state. */
+.u-zoom {
+  transition: transform 0.6s var(--ease-hover);
+}
+
+.group:hover .u-zoom {
+  transform: scale(1.03);
+}
+
+[data-hover-zoom='off'] .group:hover .u-zoom {
+  transform: none;
+}
+
+/* A hairline, not a border. One pixel, eight per cent. */
+.u-rule {
+  height: 1px;
+  width: 100%;
+  background: var(--color-hair);
+  border: 0;
+}
+
+/* CTAs are underlines, never pills. */
+.u-link {
+  position: relative;
+  display: inline-block;
+  font-size: var(--text-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-paper);
+  padding-bottom: 0.4rem;
+}
+
+.u-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right;
+  transform: scaleX(1);
+  transition: transform 0.4s var(--ease-hover);
+}
+
+.u-link:hover::after { transform-origin: left; transform: scaleX(0); }

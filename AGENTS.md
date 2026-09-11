@@ -24,13 +24,18 @@ Replaces the existing WordPress single-page site at meisterwerk.ae.
 
 ## Design direction
 
-Dark, minimal, Swiss-precision editorial. The reference register is a shop drawing rendered in negative: strict grid, hairline rules, real typographic hierarchy, monospace for specification data.
+**The client issued a written design direction on 11 September. It governs. `docs/brand.md` is the implementation of it — read that before touching styles.**
 
-- **Restraint reads as more expensive than motion.** Slow, long eases. No bounce, no springs, no spectacle.
-- Near-black ground — **never `#000`**.
-- One accent, used about three times per page.
-- Two typefaces maximum.
-- If a component has a gradient border, a glow, or a shimmer, it is wrong for this project.
+"Contemporary quiet luxury with editorial minimalism." Core principle: *luxury brand first, fit-out company second.*
+
+References: Bang & Olufsen (typography, quiet luxury), FLOS (architectural layout, minimal animation), Gucci (minimalism, immersive imagery). Named as too much: abragroup.ae. Competitor to beat: spaceme.ae.
+
+- Palette `#171717 → #0B0B0B` gradient, `#FFFFFF`, accent `#5B81B2` **used sparingly — one block per page**.
+- Sans-serif only. Glacial Indifference body, Jost display.
+- Navigation **overlays the hero**, never gains a background, inverts colour per section.
+- Image-led, generous negative space.
+- **No boxes, borders, cards, radii, shadows or decorative elements.** Hairlines at 8% white instead of borders. CTAs are underlines, never pills.
+- Restraint reads as more expensive than motion. Durations 0.2–0.5s, 500ms hard ceiling.
 
 ## Stack — pinned, do not substitute
 
@@ -41,7 +46,7 @@ Dark, minimal, Swiss-precision editorial. The reference register is a shop drawi
 | Styling | Tailwind CSS v4 (CSS-first) | ^4 |
 | Motion | GSAP + ScrollTrigger | ^3.15.0 |
 | React binding | `@gsap/react` (`useGSAP`) | ^2.1.2 |
-| Smooth scroll | Lenis | ^1.3.26 |
+| Smooth scroll | ~~Lenis~~ — **not used**, see below | installed, unused |
 | Class utils | clsx + tailwind-merge | |
 | CMS | Sanity — **not yet installed**, added after design approval | |
 | Hosting | Vercel, client-owned account | |
@@ -51,9 +56,7 @@ Dark, minimal, Swiss-precision editorial. The reference register is a shop drawi
 **Never introduce, without being asked:**
 
 - **Motion / Framer Motion.** GSAP is the animation runtime. Two runtimes on one page is a synchronisation and bundle problem. If shared-element page transitions are needed, use React's `<ViewTransition>`.
-- **ScrollSmoother or `ScrollTrigger.normalizeScroll(true)`.** Both do Lenis's job and fight it. Lenis is the choice.
-- **locomotive-scroll.** v5 is just a layer over Lenis, which we already have.
-- **`@studio-freight/lenis`.** Dead package. The `studio-freight` org is empty; everything moved to `darkroomengineering`. Install `lenis`.
+- **Any smooth-scroll library — Lenis, ScrollSmoother, locomotive-scroll.** Decision reversed on 11 Sep after analysing the client's own references: Bang & Olufsen, FLOS and Gucci all use **native scroll**, and FLOS ships **zero animation libraries**. The brief warns against motion that "slows access to content". Scroll hijacking adds input latency for no gain here. Lenis remains in package.json but is unused — remove before launch if still unused.
 - **`basementstudio/scrollytelling`.** Last pushed Feb 2024, predates React 19 and mature `useGSAP`.
 - **Barba.js.** It swaps `innerHTML` for multi-page apps. In App Router the router owns navigation and React owns the DOM.
 - **`next-view-transitions`.** Redundant on Next 16 — use React's `ViewTransition` directly.
@@ -76,15 +79,9 @@ Dark, minimal, Swiss-precision editorial. The reference register is a shop drawi
 
 ## GSAP + Lenis rules
 
-**The wiring, exactly:**
+**GSAP is used for one thing only: the entrance reveal** in `src/components/motion/Reveal.tsx`. Opacity plus a 16px rise, 0.9s, `power4.out`, triggered once at `top 85%`. If a new animation is proposed, check it against the motion rules in `docs/brand.md` first — the ceiling is deliberately low.
 
-```
-lenis.on('scroll', ScrollTrigger.update)
-gsap.ticker.add((time) => lenis.raf(time * 1000))
-gsap.ticker.lagSmoothing(0)
-```
-
-`gsap.ticker` passes **seconds**; Lenis wants **milliseconds**. Omitting `* 1000` is the single most common bug in this stack — scrolling appears frozen.
+**Two easing curves for the entire site**, both exported from `src/lib/gsap.ts`: `EASE.entrance` (`power4.out`) and `EASE.hover` (`power2.inOut`). Nothing else.
 
 **Every animation goes inside `useGSAP()`.** It wraps the callback in a `gsap.context()` and reverts on cleanup, which is what makes React's dev double-mount harmless. Rules:
 
@@ -97,7 +94,6 @@ gsap.ticker.lagSmoothing(0)
 
 - **Never put a hidden state in CSS.** No `.reveal { opacity: 0 }`. Use `gsap.from()` so the element's resting state is its natural CSS state — content stays visible if JS never runs.
 - Branch with `gsap.matchMedia()`, and give the reduce branch an explicit `gsap.set(..., { autoAlpha: 1 })` so GSAP owns the style and can revert it.
-- Disable Lenis entirely under reduced motion.
 - Use `autoAlpha`, not `opacity` — it toggles `visibility` too.
 
 **Refresh discipline:** call `ScrollTrigger.refresh()` after images load, after `document.fonts.ready`, and on route change. Triggers computed before images have intrinsic height are wrong by hundreds of pixels. Set explicit `width`/`height` (or `aspect-ratio`) on every image.
@@ -151,6 +147,50 @@ Do not build these without an approved change order: Arabic / RTL, e-commerce, v
 - The anonymised form is standard in the sector: *"Swiss watch maison — Dubai Mall — 340 sqm full fit-out, 14-week programme"* with detail crops rather than identifying wide shots.
 - **Fonts:** any typeface supplied by the client must carry a valid **web** licence. Desktop and print licences do not permit webfont use. If none is available, use Fontshare (ITF Free) or Google Fonts (OFL).
 - Never commit client photography that has not been approved for publication.
+
+## Motion system
+
+One gesture — a clip-path curtain — at three scales: page (`Veil`), screen (mobile menu), element (`ImageReveal`). Do not introduce a fourth motion idiom (slide-in panels, flips, bounces, loops) without changing `docs/design-rationale.md` first.
+
+- Supporting moves: `Reveal` (opacity + 16px rise) and `SplitLines` (masked line-by-line headline reveal, hero/statement/craft only).
+- Easing: `EASE.entrance` (`power3.out`) for entrances, `EASE.veil` (`power3.inOut`) for curtains, `EASE.hover` for hover. Nothing else.
+- Every animation is a `.from()` against the element's natural CSS state. Never set a hidden resting state in CSS — content must render complete without JavaScript.
+- Every animated component asks `useMotionEnabled('<key>')` before running. That hook checks the client's toggle **and** `prefers-reduced-motion` in one place, so no component can forget either.
+- Nothing decorative may hold the page. The veil carries a hard deadline; anything that locks scroll must carry one too.
+
+## The written brief is the spec
+
+`docs/luxury_website_design_direction.pdf` (client-supplied) is binding, and it is specific:
+
+- Navigation **overlays** the hero or banner image. Never a separate nav bar.
+- **Image led** — large-scale photography, full-width banners, carefully cropped.
+- **No boxes, borders, cards or decorative elements.** Generous negative space.
+- Sans-serif only. Body Glacial Indifference; headings a refined modern sans.
+- Accent **#5B81B2**, used sparingly, never dominant. This is the only blue the UI uses.
+- Animation minimal and purposeful. No excessive parallax or constant movement.
+- Named references: Bang & Olufsen (primary), FLOS, Gucci. Avoid: abragroup.ae.
+- Core principle: *"Luxury brand first, fit out company second."*
+
+Differentiate through **typography, composition and ratio** — the brief leaves those open. Do not differentiate through chrome; the brief forbids it. Any deviation must be recorded in the table in `docs/design-rationale.md` §17.
+
+## Layouts
+
+Four: `editorial` (shipped default), `index`, `split`, `cinematic`. Registered in `src/lib/layouts.ts` (data only — no component imports, so it is safe in both client and server code). The component map is `src/components/layouts/index.tsx`.
+
+- Layouts differ in **two places only**: the hero (`src/components/sections/hero/`) and the work section (`src/components/sections/work/`). Everything from Capabilities down is shared. Do not fork a shared section to satisfy one layout — change it for all four or add a prop.
+- The active layout is a cookie (`mw_layout`) read server-side by `src/lib/layout-server.ts` and stamped on `<html data-layout>`. Never hold it in client state: that ships all four layouts to every visitor.
+- Layout density is `--rhythm-base` in `globals.css` under `[data-layout='…']`. The spacing dial sets `--rhythm-scale`. `--spacing-block` is the product, so neither clobbers the other.
+- Project photography is a bare photo id plus `photo(id, w, h, q)` from `src/lib/content.ts`. Each layout requests the crop it needs; never store a finished URL on a project record.
+
+**At launch:** set `DEFAULT_LAYOUT`, delete `src/lib/layout-server.ts` and its two call sites, remove `<StudioGate />`. The site then renders one layout and is fully static again.
+
+## Design controls
+
+`src/lib/motion-prefs.tsx` holds the preference context, the `Prefs` type, the three level presets and `DEFAULTS`. `src/components/studio/` holds the panel, mounted only behind `?studio=1` (`StudioGate`).
+
+- Adding a new animation means: a key on `Prefs`, an entry in each of the three `LEVELS`, a row in `SWITCHES`, and a `useMotionEnabled` call in the component. All four, or the panel lies.
+- Design dials work by overriding CSS custom properties on `:root` at runtime. Any new token that should be adjustable must be a custom property consumed through `var()`, never a hard-coded value in a utility class.
+- `DEFAULTS` is the shipped configuration. When the client returns their chosen settings, edit `DEFAULTS` and delete `StudioGate` from the layout — do not ship the panel.
 
 ## Working conventions
 

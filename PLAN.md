@@ -46,15 +46,20 @@ Push to GitHub, import to Vercel under the client's account. Verify on real mobi
 
 ## Open items
 
-- [ ] Placeholder imagery — real Meisterwerk project photos, or licensed stock stand-ins?
-- [ ] Logo — SVG needed; wordmark set in type until it arrives
-- [ ] Client's typeface selection, **with evidence of a web licence**
-- [ ] Client's colour palette (brand blue, darker grey, off-white; possible light orange accent)
-- [ ] Which client brands may be named publicly, or whether projects go out anonymised
-- [ ] Content: project metadata — descriptor, location, area, programme weeks, scope of works
-- [ ] Confirm which Meisterwerk entity is contracting (UAE / KSA)
+**Blocking launch, not the 12th:**
 
----
+- [ ] **Swap placeholder photography before launch.** The 12th draft uses free stock (Unsplash/Pexels), which grants no property or model release — acceptable in a review meeting, not publishable. Replace with either real Meisterwerk photography or Adobe Stock (carries releases and indemnity).
+- [ ] Logo as SVG. Wordmark is set in type until it arrives.
+- [ ] Client's typeface selection, **with evidence of a web licence** — desktop and print licences do not permit webfont use.
+- [ ] Client's colour palette confirmed against the working values in `docs/brand.md`.
+
+**Needed for the full build:**
+
+- [ ] Which client brands may be named publicly, or whether projects go out anonymised.
+- [ ] Project metadata for the 15 launch projects — descriptor, location, area, programme weeks, scope of works.
+- [ ] Detail/macro photography specifically. Wide store shots alone weaken the whole art direction.
+- [ ] Confirm which Meisterwerk entity is contracting (UAE / KSA).
+- [ ] Nominated email address for enquiry delivery.
 
 ## Decisions taken
 
@@ -66,3 +71,5 @@ Push to GitHub, import to Vercel under the client's account. Verify on real mobi
 | Static generation throughout | Pages serve from CDN rather than regional compute. Faster, and resilient to a single-region outage. |
 | Sanity deferred until after design approval | Schema should follow the finished project template, not precede it. |
 | No component library | Nothing in the popular set suits a luxury editorial register. shadcn/Radix for behaviour only. |
+| Free stock as placeholder for the 12th | Fastest path to a designed page for review. Must be swapped before launch — no property or model release. |
+| Wordmark set in type until the SVG arrives | Costs nothing to swap later; unblocks the shell now. |
