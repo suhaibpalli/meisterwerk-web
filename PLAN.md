@@ -73,3 +73,25 @@ Push to GitHub, import to Vercel under the client's account. Verify on real mobi
 | No component library | Nothing in the popular set suits a luxury editorial register. shadcn/Radix for behaviour only. |
 | Free stock as placeholder for the 12th | Fastest path to a designed page for review. Must be swapped before launch — no property or model release. |
 | Wordmark set in type until the SVG arrives | Costs nothing to swap later; unblocks the shell now. |
+
+
+## Open with the client (as of 11 Sep 2026)
+
+- **Enquiry form.** Not built. The contact page publishes the email address and
+  each office's telephone number instead. A form needs a mail transport and a
+  spam control decided first, and a form that silently drops enquiries is worse
+  than no form. Raise it before launch.
+- **Milan.** meisterwerk.ae says the team is "strategically located in Dubai,
+  Riyadh, Milan, and New Delhi", but publishes contact details for only three.
+  Confirm whether Milan is an office that belongs in the footer.
+- **Published enquiry line.** +971 55 605 1199 appears against all three offices
+  on the current site. Confirm which number should be the published one.
+- **Requirements checklist correction.** The issued checklist says the brand blue
+  fails contrast on a dark background. It does not — #5B81B2 on #0B0B0B measures
+  4.87:1 and passes AA. Correct it if the document is reissued.
+- **Still outstanding from Group 1:** web font licence confirmation for the brand
+  typeface, and vector logo artwork (.ai or .svg — the supplied PDF has been
+  traced, which is adequate for now but not ideal at small sizes).
+- **Group 2 content** replaces every word on /about, /capabilities and the
+  project descriptions. All current copy is placeholder written from the two
+  briefing calls and the existing site.
