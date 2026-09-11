@@ -19,24 +19,28 @@ const FACTS = [
  *
  * The one thing the brief leaves entirely open is *where the type sits*, and
  * that is where this layout earns its own identity. The convention — Gucci,
- * FLOS, every maison site — anchors hero type to the bottom-left of the frame
- * and leaves the top empty for the nav. This inverts it: the headline sits
- * directly under the nav at the head of the page, and the baseline carries
- * nothing but a single wide-tracked line of facts.
+ * FLOS, every maison site — anchors hero type to the bottom-left corner. This
+ * does not: the headline and its lead are centred in the frame as one block,
+ * split across the grid, with a wide-tracked rail of facts on the baseline.
  *
- * Two reasons it is better here, not just different:
+ * Centring the *block* is not the same as centring the text. The headline stays
+ * hard left on the column grid and the lead sits across in columns 8–12; what
+ * is centred is the pair, vertically. That keeps the asymmetry that makes the
+ * composition specific while giving the frame a stable middle.
  *
- * 1. It reads as a masthead rather than a campaign image. A visitor meets the
- *    claim before the atmosphere, which suits a company being assessed on
- *    competence rather than desire.
- * 2. Bottom-anchored type needs a heavy scrim at the bottom of every hero
- *    image, and the bottom of an interior photograph is the floor. Top-anchored
- *    type darkens the ceiling instead — which is usually the least interesting
- *    part of the frame and the part already in shadow.
+ * The two blocks align at the bottom. At ~50px against 16px their first lines
+ * can never share a baseline, so matching tops leaves them ~12px out — close
+ * enough to read as a mistake, far enough to see. Aligning at the bottom puts
+ * the lead's last baseline on the headline's last baseline, which is a real
+ * typographic relationship and needs no magic number.
  */
 export function HeroEditorial() {
   return (
-    <section id="top" data-nav="dark" className="relative h-[94svh] min-h-[600px] w-full">
+    <section
+      id="top"
+      data-nav="dark"
+      className="relative flex h-[94svh] min-h-[600px] w-full items-center overflow-hidden"
+    >
       <Image
         src="https://images.unsplash.com/photo-1782834294716-8e28c18bdba6?auto=format&fit=crop&w=2400&h=1500&q=88"
         alt="Completed boutique interior — stone plinths, bronze-mirrored reveals and a solid marble stair"
@@ -46,18 +50,24 @@ export function HeroEditorial() {
         sizes="100vw"
         className="u-img object-cover"
       />
-      {/* Weighted to the head of the frame, where the type is. No box, no
-          card — a tonal gradient is not a decorative element. */}
+      {/* Three jobs, one gradient: hold the nav at the very top, hold the
+          centred type through the middle band, hold the facts rail on the
+          baseline — and open up around 76% so the photograph still has a
+          passage at full strength. A single flat overlay heavy enough for all
+          three would grey the whole image. No box, no card; a tonal gradient
+          is not a decorative element. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, rgba(11,11,11,0.88) 0%, rgba(11,11,11,0.62) 34%, rgba(11,11,11,0.18) 62%, rgba(11,11,11,0.55) 100%)',
+            'linear-gradient(180deg, rgba(11,11,11,0.80) 0%, rgba(11,11,11,0.50) 22%, rgba(11,11,11,0.54) 48%, rgba(11,11,11,0.34) 64%, rgba(11,11,11,0.16) 76%, rgba(11,11,11,0.68) 100%)',
         }}
       />
 
-      <div className="u-container absolute inset-x-0 top-0 pt-32 md:pt-40">
+      {/* pb offsets the facts rail below, so the block optically centres in
+          the space actually available to it rather than in the whole frame. */}
+      <div className="u-container relative w-full pt-10 pb-20 md:pb-24">
         {/* items-end, not a hand-tuned top offset.
             The headline is ~50px and the lead is 16px, so their first lines can
             never share a baseline — matching the tops leaves them 12px apart,

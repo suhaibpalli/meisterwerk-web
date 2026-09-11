@@ -273,7 +273,11 @@ The written direction is specific. Every layout is measured against it honestly:
 
 Its problem was never compliance — it was that Gucci is one of the named references, so building to the reference list produced something close to Gucci. The brief leaves one thing completely unspecified, and that is where the difference now lives: **where the type sits**.
 
-The convention anchors hero type to the bottom-left and leaves the head of the frame empty for the nav. This layout inverts it — headline immediately under the nav, lead paragraph set across on the same baseline in the right-hand columns, and nothing along the bottom edge but a single wide-tracked line of facts. It reads as a masthead rather than a campaign image, and it darkens the ceiling of the photograph rather than the floor, which is usually the better part of an interior shot to lose.
+The convention anchors hero type to the bottom-left corner of the frame. This layout does not: the headline and its lead are centred in the frame as one block, split across the grid, with a wide-tracked rail of facts on the baseline.
+
+Centring the *block* is not the same as centring the text. The headline stays hard left on the column grid and the lead sits across in columns 8–12 — what is centred is the pair, vertically. That keeps the asymmetry that makes the composition specific while giving the frame a stable middle, which the earlier top-anchored version did not have: it left the type stranded under the nav with the whole lower two-thirds unanchored.
+
+The two blocks align at the **bottom**, not the top. At ~50px against 16px their first lines can never share a baseline, so matching tops leaves them about 12px out — close enough to read as a mistake and far enough to see. Aligning at the bottom puts the lead's last baseline exactly on the headline's last baseline, which is a real typographic relationship and needs no hand-tuned offset. The facts rail runs on the same twelve columns with spans set per item (2 + 3 + 4 + 3) rather than divided evenly, because four equal columns break the longest fact onto a second line.
 
 The work section differentiates the same way — by **ratio sequence** rather than chrome. One project at full width and 21:9, the rest three-up in portrait with a real gutter. The uniform zero-gutter tile grid is what makes portfolios read as catalogues, and it makes every project look equally important, which is the one thing a portfolio must not do.
 
