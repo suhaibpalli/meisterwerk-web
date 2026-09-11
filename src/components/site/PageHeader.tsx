@@ -28,8 +28,10 @@ export function PageHeader({
         <p className="u-eyebrow">{eyebrow}</p>
       </Reveal>
 
-      <div className="mt-8 grid md:grid-cols-12">
-        <div className="md:col-span-7">
+      {/* See the hero: blocks aligned at the bottom so the lead's last
+          baseline meets the headline's, rather than a guessed top offset. */}
+      <div className="mt-8 grid md:grid-cols-12 md:items-end">
+        <div className="md:col-span-6">
           <SplitLines
             as="h1"
             className="u-display max-w-[14ch] text-paper-soft"
@@ -39,7 +41,7 @@ export function PageHeader({
           </SplitLines>
         </div>
         {lead ? (
-          <div className="md:col-span-4 md:col-start-9 md:pt-3">
+          <div className="md:col-span-5 md:col-start-8">
             <SplitLines
               as="p"
               className="mt-8 max-w-[36ch] leading-relaxed text-mute-70 md:mt-0"

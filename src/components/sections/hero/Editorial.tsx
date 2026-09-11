@@ -2,11 +2,16 @@ import Image from 'next/image'
 import { SplitLines } from '@/components/motion/SplitLines'
 import { Reveal } from '@/components/motion/Reveal'
 
+/**
+ * Spans are set per item rather than divided evenly. Four equal columns is the
+ * lazy answer and it breaks the longest fact onto a second line, which is the
+ * one thing a single-line rail cannot survive. 2 + 3 + 4 + 3 = 12.
+ */
 const FACTS = [
-  'Est. 2012',
-  '50,000 sq ft facility',
-  'Dubai · Riyadh · New Delhi',
-  '14 maisons',
+  { label: 'Est. 2012', span: 'md:col-span-2' },
+  { label: '50,000 sq ft facility', span: 'md:col-span-3' },
+  { label: 'Dubai · Riyadh · New Delhi', span: 'md:col-span-4' },
+  { label: '14 maisons', span: 'md:col-span-3' },
 ]
 
 /**
@@ -53,8 +58,15 @@ export function HeroEditorial() {
       />
 
       <div className="u-container absolute inset-x-0 top-0 pt-32 md:pt-40">
-        <div className="grid md:grid-cols-12">
-          <div className="md:col-span-7">
+        {/* items-end, not a hand-tuned top offset.
+            The headline is ~50px and the lead is 16px, so their first lines can
+            never share a baseline — matching the tops leaves them 12px apart,
+            which is close enough to read as a mistake and far enough to see.
+            Aligning the blocks at the bottom puts the lead's last baseline on
+            the headline's last baseline, which is a real typographic
+            relationship and holds at every viewport without a magic number. */}
+        <div className="grid md:grid-cols-12 md:items-end">
+          <div className="md:col-span-6">
             <SplitLines
               as="h1"
               className="u-display max-w-[13ch] text-paper-soft"
@@ -63,7 +75,7 @@ export function HeroEditorial() {
               Boutiques built to the millimetre
             </SplitLines>
           </div>
-          <div className="md:col-span-4 md:col-start-9 md:pt-3">
+          <div className="md:col-span-5 md:col-start-8">
             <SplitLines
               as="p"
               className="mt-8 max-w-[34ch] leading-relaxed text-mute-70 md:mt-0"
@@ -76,10 +88,15 @@ export function HeroEditorial() {
         </div>
       </div>
 
+      {/* The facts sit on the same 12-column grid as the headline above, three
+          columns each, so the rail lines up with the composition instead of
+          ragging out as a flex-wrap of unequal chips. */}
       <Reveal delay={0.6} className="absolute inset-x-0 bottom-0">
-        <ul className="u-container flex flex-wrap gap-x-10 gap-y-2 pb-10 text-[0.6875rem] uppercase tracking-[0.2em] text-mute-50 md:pb-12">
+        <ul className="u-container grid grid-cols-2 gap-y-3 pb-10 text-[0.6875rem] uppercase tracking-[0.2em] text-mute-50 md:grid-cols-12 md:pb-12">
           {FACTS.map((fact) => (
-            <li key={fact}>{fact}</li>
+            <li key={fact.label} className={fact.span}>
+              {fact.label}
+            </li>
           ))}
         </ul>
       </Reveal>
