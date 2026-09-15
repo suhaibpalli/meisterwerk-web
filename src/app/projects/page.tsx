@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { PREVIEW_LOCK } from '@/lib/preview'
+import { PreviewLock } from '@/components/site/PreviewLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PROJECTS, photo } from '@/lib/content'
@@ -23,6 +25,8 @@ export const metadata: Metadata = {
  * "carefully cropped architectural imagery" actually requires in practice.
  */
 export default function ProjectsPage() {
+  if (PREVIEW_LOCK) return <PreviewLock title="Projects" />
+
   return (
     <>
       <PageHeader

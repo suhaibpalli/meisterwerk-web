@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { PREVIEW_LOCK } from '@/lib/preview'
+import { PreviewLock } from '@/components/site/PreviewLock'
 import { STUDIO } from '@/lib/content'
 import { PageHeader } from '@/components/site/PageHeader'
 import { Workshop } from '@/components/sections/Workshop'
@@ -16,6 +18,8 @@ export const metadata: Metadata = {
 }
 
 export default function AboutPage() {
+  if (PREVIEW_LOCK) return <PreviewLock title="Studio" />
+
   return (
     <>
       <PageHeader

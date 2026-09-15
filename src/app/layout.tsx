@@ -6,6 +6,7 @@ import { Veil } from '@/components/motion/Veil'
 import { MotionPrefsProvider } from '@/lib/motion-prefs'
 import { StudioGate } from '@/components/studio/StudioGate'
 import { getLayout } from '@/lib/layout-server'
+import { PREVIEW_LOCK } from '@/lib/preview'
 import './globals.css'
 
 const SITE = 'https://meisterwerk.ae'
@@ -34,7 +35,10 @@ export const metadata: Metadata = {
     description:
       'Boutiques built for the world’s luxury maisons across the UAE and Saudi Arabia.',
   },
-  robots: { index: true, follow: true },
+  // The preview is not for search engines. Flip PREVIEW_LOCK at launch.
+  robots: PREVIEW_LOCK
+    ? { index: false, follow: false }
+    : { index: true, follow: true },
   alternates: { canonical: SITE },
 }
 

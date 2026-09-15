@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { PREVIEW_LOCK } from '@/lib/preview'
+import { PreviewLock } from '@/components/site/PreviewLock'
 import { CONTACT, OFFICES } from '@/lib/content'
 import { PageHeader } from '@/components/site/PageHeader'
 import { Reveal } from '@/components/motion/Reveal'
@@ -11,6 +13,8 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
+  if (PREVIEW_LOCK) return <PreviewLock title="Contact" />
+
   return (
     <>
       <PageHeader

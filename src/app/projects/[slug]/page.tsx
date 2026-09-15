@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { PREVIEW_LOCK } from '@/lib/preview'
+import { PreviewLock } from '@/components/site/PreviewLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -32,6 +34,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function ProjectPage({ params }: Params) {
+  if (PREVIEW_LOCK) return <PreviewLock title="Project" />
+
   const { slug } = await params
   const index = PROJECTS.findIndex((p) => p.slug === slug)
   if (index === -1) notFound()

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { PREVIEW_LOCK } from '@/lib/preview'
+import { PreviewLock } from '@/components/site/PreviewLock'
 import { CAPABILITIES } from '@/lib/content'
 import { PageHeader } from '@/components/site/PageHeader'
 import { Workshop } from '@/components/sections/Workshop'
@@ -21,6 +23,8 @@ export const metadata: Metadata = {
  * Everything on this page is named as something built.
  */
 export default function CapabilitiesPage() {
+  if (PREVIEW_LOCK) return <PreviewLock title="Capabilities" />
+
   return (
     <>
       <PageHeader

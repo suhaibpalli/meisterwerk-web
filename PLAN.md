@@ -95,3 +95,19 @@ Push to GitHub, import to Vercel under the client's account. Verify on real mobi
 - **Group 2 content** replaces every word on /about, /capabilities and the
   project descriptions. All current copy is placeholder written from the two
   briefing calls and the existing site.
+
+
+## Preview lock (added 15 Sep 2026)
+
+Only the home page is open on deployed builds. Every other route renders
+`PreviewLock` instead — a designed "in design" screen, not a 404 or a redirect,
+so a client who clicks Projects lands on something intentional.
+
+- Switch: `src/lib/preview.ts`, a committed constant (`.env*` is gitignored, so
+  an env var would live only in the Vercel dashboard — invisible in review).
+- Local development is never locked; the full site stays workable.
+- While locked, the root layout also serves `noindex, nofollow`, so a preview
+  on a vercel.app domain cannot be indexed.
+
+**AT LAUNCH:** set `PREVIEW_LOCK` to `false`. That single change unlocks every
+route and restores `index, follow`.
