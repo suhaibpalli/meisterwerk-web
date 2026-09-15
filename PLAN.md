@@ -103,11 +103,29 @@ Only the home page is open on deployed builds. Every other route renders
 `PreviewLock` instead — a designed "in design" screen, not a 404 or a redirect,
 so a client who clicks Projects lands on something intentional.
 
-- Switch: `src/lib/preview.ts`, a committed constant (`.env*` is gitignored, so
-  an env var would live only in the Vercel dashboard — invisible in review).
-- Local development is never locked; the full site stays workable.
-- While locked, the root layout also serves `noindex, nofollow`, so a preview
-  on a vercel.app domain cannot be indexed.
+Controlled by the `PREVIEW_LOCK` environment variable, resolved in
+`src/lib/preview.ts`:
 
-**AT LAUNCH:** set `PREVIEW_LOCK` to `false`. That single change unlocks every
-route and restores `index, follow`.
+| `PREVIEW_LOCK` | Result |
+|---|---|
+| `1` / `true` | Locked everywhere, including local development |
+| `0` / `false` | Open everywhere, including a deployed build |
+| unset | Locked in production, open in development — **the default** |
+
+The unset default is the important one: a deploy is locked with no
+configuration at all, so the lock cannot be lost by forgetting a dashboard
+setting. The explicit values exist so the lock can be inspected locally without
+editing code.
+
+- `.env.example` documents the flag and is committed (`.gitignore` carves it
+  out of the blanket `.env*` rule). `.env.local` stays ignored.
+- Next reads env files only at startup — **restart the dev server** after
+  changing one.
+- Server-side only. Never expose as `NEXT_PUBLIC_*`: a client-side flag would
+  ship the locked routes' real content to the browser regardless.
+- While locked, the root layout serves `noindex, nofollow`, so a preview on a
+  vercel.app domain cannot be indexed.
+
+**AT LAUNCH:** set `PREVIEW_LOCK=0` in the production environment, or change
+the fallback in `src/lib/preview.ts` to `false`. Either unlocks every route and
+restores `index, follow`.

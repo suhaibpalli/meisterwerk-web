@@ -1,18 +1,33 @@
 /**
  * Preview lock.
  *
- * Only the home page is open on the deployed preview; every other route shows
- * a deliberate "in design" screen instead of unfinished work. This matches
- * what the client was told — the home page first, the rest in the next stage —
- * and it stops a half-dressed page being judged as a finished one.
+ * Only the home page is open while this is on; every other route renders a
+ * designed "in design" screen instead of unfinished work. That matches what
+ * the client was told — home page first, the rest in the next stage — and it
+ * stops a half-dressed page being judged as a finished one.
  *
- * Deliberately a committed constant rather than an environment variable:
- * `.env*` is gitignored here, so an env-based switch would live only in the
- * Vercel dashboard where it is invisible in review and easy to forget. This is
- * visible in the diff and it is one line to change.
+ * Three states, so the default is safe and the override is explicit:
  *
- * Local development is never locked, so the full site stays workable.
+ *   PREVIEW_LOCK=1      locked, anywhere, including local development
+ *   PREVIEW_LOCK=0      open, anywhere, including a deployed build
+ *   unset               locked in production, open in development
  *
- * AT LAUNCH: set this to `false`.
+ * The unset default is what matters: a deploy is locked with no configuration
+ * at all, so the lock cannot be lost by forgetting a dashboard setting. The
+ * explicit values exist so the lock can be seen locally without editing code
+ * — put PREVIEW_LOCK=1 in .env.local and restart the dev server.
+ *
+ * Read on the server only. Never expose this as NEXT_PUBLIC_*: a client-side
+ * flag would ship the locked routes' real content to the browser anyway.
+ *
+ * AT LAUNCH: set PREVIEW_LOCK=0 in the production environment, or change the
+ * fallback below to `false`.
  */
-export const PREVIEW_LOCK = process.env.NODE_ENV === 'production'
+function resolveLock(): boolean {
+  const flag = process.env.PREVIEW_LOCK?.trim().toLowerCase()
+  if (flag === '1' || flag === 'true') return true
+  if (flag === '0' || flag === 'false') return false
+  return process.env.NODE_ENV === 'production'
+}
+
+export const PREVIEW_LOCK = resolveLock()
